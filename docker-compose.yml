@@ -1,0 +1,86 @@
+version: '3.9'
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+      target: development
+    command: npm run start:dev api-gateway
+    depends_on:
+      - auth-users
+      - kino-db
+      - rabbitmq
+      - db
+      - db2
+
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '5000:5000'  
+  auth-users:
+    build:
+      context: .
+      dockerfile: ./apps/auth-users/Dockerfile
+      target: development
+    command: npm run start:dev auth-users
+    env_file:
+      - ./apps/auth-users/.env
+    depends_on:
+      - db2
+      - rabbitmq
+      
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  kino-db:
+    build:
+      context: .
+      dockerfile: ./apps/kino-db/Dockerfile
+      target: development
+    command: npm run start:dev kino-db
+    ports:
+      - '3002:3002'
+    env_file:
+      - ./apps/kino-db/.env
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_module
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@root.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    networks:
+      - default
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    ports:
+      - 5672:5672   
+  db:
+    container_name: db
+    image: postgres
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=kino
+    ports:
+      - 5432:5432  
+
+  db2:
+    container_name: db2
+    image: postgres
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=user
+    ports:
+      - 5433:5432
+   
