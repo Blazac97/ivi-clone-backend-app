@@ -45,7 +45,6 @@ export class AppController {
   @Post("/registration")
   async registrationUser(@Body() dto: AuthDto) {
     const user = await this.clientUsers.send("registration", dto).toPromise();
-
     return user;
   }
 
