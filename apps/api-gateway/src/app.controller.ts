@@ -112,7 +112,6 @@ export class AppController {
   @Get("/film/:id")
   async getFilmById(@Param("id") id: number) {
     const film = await this.clientData.send("getFilmById", id).toPromise();
-
     return film;
   }
 

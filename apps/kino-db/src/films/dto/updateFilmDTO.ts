@@ -31,7 +31,6 @@ export class UpdateFilmDTO {
   year: number;
   top10: number;
   top250: number;
-  kinopoiskId: number;
   premiereWorldDate: Date;
   createdAt: Date;
 

@@ -16,9 +16,6 @@ export class Person extends Model<Person,PersonCreationAtt> {
   @Column({type:DataType.INTEGER, unique:true, autoIncrement:true, primaryKey:true})
   id:number
 
-  @Column({type:DataType.INTEGER, unique:true,})
-  kinopoiskId:number
-
   @Column({type:DataType.STRING, unique:true,})
   photoUrl:string
 

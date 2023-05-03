@@ -73,14 +73,20 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=kino
     ports:
-      - 5432:5432  
+      - 5432:5432 
+    volumes:   
+    - ./devops/kino-db/final-kino-initial-data-dump.sql:/docker-entrypoint-initdb.d/final-kino-initial-data-dump.sql  
   db2:
     container_name: db2
-    image: postgres
+    image: postgres:15.2
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=user
     ports:
       - 5433:5432
+    volumes:   
+    - ./devops/users-db/users-init-dump.sql:/docker-entrypoint-initdb.d/users-init-dump.sql  
+
+      
    
