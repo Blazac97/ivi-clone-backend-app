@@ -87,8 +87,6 @@ export class Film extends Model<Film,FilmCreationAtt> {
   @Column({type:DataType.INTEGER, })
   top250:number
 
-  @Column({type:DataType.INTEGER, })
-  kinopoiskId:number
 
   @Column({type:DataType.DATE, })
   premiereWorldDate:Date

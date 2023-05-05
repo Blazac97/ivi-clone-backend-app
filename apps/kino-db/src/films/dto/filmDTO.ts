@@ -31,7 +31,6 @@ export class FilmDTO {
   year: number;
   top10: number;
   top250: number;
-  kinopoiskId: number;
   premiereWorldDate: Date;
   createdAt: Date;
   persons: PersonDTO[];
