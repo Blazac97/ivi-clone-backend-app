@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import {JwtModule} from "@nestjs/jwt";
 
 @Module({
-  imports: [],
+  imports: [
+    JwtModule.register({
+      secret: process.env.PRIVATE_KEY || 'SECRET',
+      signOptions: {
+        expiresIn: '124h'
+      }
+    })
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
