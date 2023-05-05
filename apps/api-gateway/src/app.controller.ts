@@ -57,19 +57,26 @@ export class AppController {
   }
 
 
-  @Get("/genres")
+  @Get("/filters")
   async getAllGenres() {
-    const genre = await this.clientData.send("getAll.genres", "").toPromise();
+    const genres = await this.clientData.send("getAll.genres", "").toPromise();
+    const countries = await this.clientData.send("getAll.countries", "").toPromise();
+    const years = await this.clientData.send("getAllFilmYears", "").toPromise();
+    const genreDto = genres.map((genre) => {
+      return { nameRu: genre.nameRu, nameEn: genre.nameEn };
+    });
 
-    return genre;
+    const countryDto = countries.map((country) => {
+      return { countryName: country.countryName };
+    });
+
+    return {
+      genres: genreDto,
+      countries: countryDto,
+      years
+    };
   }
 
-  @Get("/countries")
-  async getAllCountries() {
-    const country = await this.clientData.send("getAll.countries", "").toPromise();
-
-    return country;
-  }
 
   @Get("/professions")
   async getAllProfessions() {
@@ -102,11 +109,6 @@ export class AppController {
 
   }
 
- @Get("/films")
-  async getFilms() {
-    const film = await this.clientData.send("getAllFilms", "").toPromise();
-    return film;
-  }
 
   
   @Get("/film/:id")
@@ -130,15 +132,20 @@ export class AppController {
     return film;
   }
 
-  @Get("/filters")
-  async filters(@Query("genres") genres?: string[],
+  @Get("/films")
+  async filters(@Query("page") page: number,
+                @Query("perPage") perPage: number,
+                @Query("genres") genres?: string[],
                 @Query("countries") countries?: string[],
                 @Query("persons") persons?: string[],
                 @Query("minRatingKp") minRatingKp?: number,
-                @Query("minVotesKp") minVotesKp?: number) {
+                @Query("minVotesKp") minVotesKp?: number,
+                @Query("sortBy") sortBy?: string,) {
     const films = await this.clientData.send("filters", {
+      page, perPage,
       genres, countries,
-      persons, minRatingKp, minVotesKp
+      persons, minRatingKp,
+      minVotesKp, sortBy
     }).toPromise();
 
     return films;

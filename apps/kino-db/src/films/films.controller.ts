@@ -32,7 +32,7 @@ export class FilmsController {
     return await this.filmService.getAllFilms();
   }
 
-  @MessagePattern("getFilmById")
+  @MessagePattern("deleteFilmById")
   async deleteFilmById(@Payload() id: number) {
     await this.filmService.deleteFilm(id);
     return HttpStatus.OK;
@@ -44,12 +44,16 @@ export class FilmsController {
   }
 
   @MessagePattern("filters")
-  async filters(@Payload() data: {
+  async filters(@Payload() data: {page:number,perPage:number,
     genres?: string[], countries?: string[], persons?: string[],
-    minRatingKp?: number, minVotesKp?: number
+    minRatingKp?: number, minVotesKp?: number,sortBy?: string
   }) {
-    const { genres, countries, persons, minRatingKp, minVotesKp } = data;
-    console.log(genres, countries, persons, minRatingKp, minVotesKp);
-    return await this.filmService.filmFilters(genres, countries, persons, minRatingKp, minVotesKp);
+    const { page,perPage,genres, countries, persons, minRatingKp, minVotesKp,sortBy } = data;
+    return await this.filmService.filmFilters(page,perPage,genres, countries, persons, minRatingKp, minVotesKp,sortBy);
+  }
+
+  @MessagePattern("getAllFilmYears")
+  async getAllFilmYears(@Payload() name: string) {
+    return await this.filmService.getAllFilmYears();
   }
 }

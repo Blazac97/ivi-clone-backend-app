@@ -14,7 +14,7 @@ import { Genre } from "../genres/genres.model";
 import { UpdateFilmDTO } from "./dto/updateFilmDTO";
 import { Profession } from "../professions/professions.model";
 import { Fact } from "../facts/facts.model";
-import { Op } from "sequelize";
+import {Op, Sequelize} from "sequelize";
 
 @Injectable()
 export class FilmsService {
@@ -161,7 +161,7 @@ export class FilmsService {
     return film;
   }
 
-  async filmFilters(genres?: string[], countries?: string[], persons?: string[], minRatingKp: number = 0, minVotesKp: number = 0) {
+  async filmFilters(page: number, perPage: number, genres?: string[], countries?: string[], persons?: string[], minRatingKp: number = 0, minVotesKp: number = 0, sortBy?: string) {
     const include = [];
     if (genres) {
       include.push({
@@ -185,43 +185,35 @@ export class FilmsService {
       }
     });
 
+    const order = [];
+    if (sortBy === "rating") {
+      order.push(["ratingKp", "DESC"]);
+    } else if (sortBy === "novelty") {
+      order.push(["premiereWorldDate", "DESC"]);
+    } else {
+      order.push(["votesKp", "DESC"]);
+    }
+
     const films = await this.filmRepository.findAll({
       include,
       where: {
         ratingKp: { [Op.gte]: minRatingKp },
         votesKp: { [Op.gte]: minVotesKp }
-      }
+      },
+      limit: perPage,
+      offset: (page - 1) * perPage,
+      order
     });
     return films;
   }
 
-  async sortFilmsByVotesKp() {
-    const films = await this.filmRepository.findAll({
-      order: [["votesKp", "DESC"]]
-    });
-    return films;
-  }
 
-  async sortFilmsByRatingKp() {
-    const films = await this.filmRepository.findAll({
-      order: [["ratingKp", "DESC"]]
+  async getAllFilmYears() {
+    const years = await this.filmRepository.findAll({
+      attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('year')), 'year']],
+      order: [[Sequelize.col('year'), 'ASC']]
     });
-    return films;
-  }
 
-  async sortByPremiereDate() {
-    const films = await this.filmRepository.findAll({
-      order: [["premiereWorldDate", "DESC"]]
-    });
-    return films;
-  }
-
-  async sortFilmsAlphabetically() {
-    const films = await this.filmRepository.findAll({
-      order: [
-        ["filmNameRu", "ASC"]
-      ]
-    });
-    return films;
+    return years.map((year) => year.year);
   }
 }
