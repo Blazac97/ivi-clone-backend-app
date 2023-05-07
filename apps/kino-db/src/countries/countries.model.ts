@@ -17,6 +17,9 @@ export class Country extends Model<Country,CountryCreationAtt> {
   @Column({type:DataType.STRING, unique:true,})
   countryName:string
 
+  @Column({type:DataType.STRING, unique:true,})
+  countryNameEn:string
+
   @BelongsToMany(() => Film,() => FilmCountry)
   films:Film[]
 
