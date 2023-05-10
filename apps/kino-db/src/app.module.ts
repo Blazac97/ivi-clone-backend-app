@@ -17,6 +17,8 @@ import { FilmGenre } from "./films/filmGenre";
 import { FilmCountry } from "./films/filmCountry";
 import { FilmPerson } from "./films/filmPerson";
 import { PersonProfession } from "./persons/personProfession";
+import { CommentsModule } from './comments/comments.module';
+import {Comment} from "./comments/comments.model";
 
 
 @Module({
@@ -31,7 +33,7 @@ import { PersonProfession } from "./persons/personProfession";
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [Genre,Fact,Country,Film,Person,Profession,FilmGenre,FilmCountry,FilmPerson,PersonProfession],
+      models: [Genre,Fact,Country,Film,Person,Profession,FilmGenre,FilmCountry,FilmPerson,PersonProfession,Comment],
       autoLoadModels: true,
       synchronize: true,
     }),
@@ -41,6 +43,7 @@ import { PersonProfession } from "./persons/personProfession";
     PersonsModule,
     FactsModule,
     FilmsModule,
+    CommentsModule,
   ],
   controllers: [],
   providers: [],

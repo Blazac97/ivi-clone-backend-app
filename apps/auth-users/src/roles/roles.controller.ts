@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Param, Post, UsePipes } from "@nestjs/common";
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from "./dto/createRoleDto";
+import {MessagePattern, Payload} from "@nestjs/microservices";
+import {CreateUserDto} from "../users/dto/createUserDto";
 
 @Controller('roles')
 export class RolesController {
@@ -8,9 +10,11 @@ export class RolesController {
   constructor(private roleService: RolesService) {}
 
 
-  @Post()
-  create(@Body() dto: CreateRoleDto){
-    return this.roleService.createRole(dto);
+
+
+  @MessagePattern('createRole')
+  async registration(@Payload() dto: CreateRoleDto) {
+    return  await this.roleService.createRole(dto);
   }
 
 
