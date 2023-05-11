@@ -23,10 +23,11 @@ import { ProfessionsService } from "../professions/professions.service";
 import { Profession } from "../professions/professions.model";
 import { ProfessionsModule } from "../professions/professions.module";
 import { UpdateFilmDTO } from "./dto/updateFilmDTO";
+import {Comment} from "../comments/comments.model";
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Film,FilmPerson,FilmCountry,Fact,FilmGenre,Country,Genre,Person,Profession]),
+    SequelizeModule.forFeature([Film,FilmPerson,FilmCountry,Fact,FilmGenre,Country,Genre,Person,Profession,Comment]),
     FactsModule,
     PersonsModule,
     CountriesModule,

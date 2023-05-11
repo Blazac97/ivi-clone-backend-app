@@ -6,6 +6,7 @@ import { User } from "./users/users.model";
 import { RolesModule } from './roles/roles.module';
 import { Role } from "./roles/roles.model";
 import { UserRoles } from "./roles/user-role";
+import {JwtModule} from "@nestjs/jwt";
 
 
 

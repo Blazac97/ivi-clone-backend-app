@@ -1,4 +1,4 @@
-import { BelongsToMany, Column, DataType, HasOne, Model, Table } from "sequelize-typescript";
+import {BelongsToMany, Column, DataType, HasMany, HasOne, Model, Table} from "sequelize-typescript";
 
 import { PersonProfession } from "../persons/personProfession";
 import { Person } from "../persons/persons.model";
@@ -8,6 +8,7 @@ import { FilmPerson } from "./filmPerson";
 import { FilmCountry } from "./filmCountry";
 import { Genre } from "../genres/genres.model";
 import { FilmGenre } from "./filmGenre";
+import {Comment} from "../comments/comments.model";
 
 
 
@@ -105,4 +106,7 @@ export class Film extends Model<Film,FilmCreationAtt> {
 
   @HasOne(() => Fact)
   fact: Fact;
+
+  @HasMany(() => Comment)
+  comments: Comment
 }

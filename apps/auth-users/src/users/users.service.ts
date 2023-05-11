@@ -68,10 +68,11 @@ export class UsersService {
   }
 
   async generateToken(user: User) {
-    const payload = {email: user.email, id: user.id, roles: user.roles}
+    const payload = { email: user.email, id: user.id, roles: user.roles };
+    const options = { secret: 'SECRET' };
     return {
-      token: this.jwtService.sign(payload)
-    }
+      token: await this.jwtService.signAsync(payload, options),
+    };
   }
 
 

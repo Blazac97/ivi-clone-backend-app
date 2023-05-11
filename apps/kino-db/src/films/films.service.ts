@@ -15,6 +15,7 @@ import { UpdateFilmDTO } from "./dto/updateFilmDTO";
 import { Profession } from "../professions/professions.model";
 import { Fact } from "../facts/facts.model";
 import {Op, Sequelize} from "sequelize";
+import {Comment} from "../comments/comments.model";
 
 @Injectable()
 export class FilmsService {
@@ -51,6 +52,10 @@ export class FilmsService {
         {
           model: Fact,
           as: "fact"
+        },
+        {
+          model: Comment,
+          as: "comments"
         }
       ]
     });
@@ -59,9 +64,31 @@ export class FilmsService {
       return null;
     }
 
-    return film;
+    const similarFilms = await this.findFilmsByGenre(film.genres.map(g => g.nameRu));
+
+    return {
+      film,
+      similarFilms
+    };
   }
 
+  async findFilmsByGenre(genreNames: string[]) {
+    const films = await this.filmRepository.findAll({
+      include: [
+        {
+          model: Genre,
+          where: {
+            [Op.or]: [
+              { nameRu: genreNames },
+              { nameEn: genreNames }
+            ]
+          }
+        }
+      ]
+    });
+
+    return films;
+  }
 
   async createFilm(dto: FilmDTO) {
 

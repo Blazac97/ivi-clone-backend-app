@@ -25,24 +25,35 @@ export class JwtAuthGuard implements CanActivate {
             //  получение первой части заголовка авторизации,
             //  которая должна содержать значение "Bearer".
             const bearer = authHeader.split(' ')[0]
+            console.log(bearer)
             //  получение второй части заголовка авторизации, которая содержит JWT токен.
             const token = authHeader.split(' ')[1]
+            console.log(token)
 
             //  проверка корректности формата заголовка авторизации.
             if (bearer !== 'Bearer' || !token) {
                 //  выброс исключения UnauthorizedException, если заголовок авторизации некорректен.
-                throw new UnauthorizedException({message: 'Пользователь не авторизован'})
+                throw new UnauthorizedException({message: 'Пользователь не авторизован1'})
             }
 
             //  вызов метода verify объекта сервиса JwtService для проверки подлинности JWT токена.
-            const user = this.jwtService.verify(token);
-            // сохранение данных пользователя в объекте запроса
-            req.user = user;
-            // возврат значения true, если пользователь авторизован.
-            return true;
+            try {
+                const user = this.jwtService.verify(token);
+                console.log(user)
+                // сохранение данных пользователя в объекте запроса
+                req.user = user;
+                console.log(req.user)
+                // возврат значения true, если пользователь авторизован.
+                return true;
+                // код, который работает с верифицированным пользователем
+            } catch (error) {
+                console.log(error.message);
+                // обработка ошибки
+            }
+
         } catch (e) {
             // выброс исключения UnauthorizedException, если пользователь не авторизован.
-            throw new UnauthorizedException({message: 'Пользователь не авторизован'})
+            throw new UnauthorizedException({message: 'Пользователь не авторизован2'})
         }
     }
 

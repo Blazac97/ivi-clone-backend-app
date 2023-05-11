@@ -1,10 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UsePipes } from "@nestjs/common";
+import {Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards, UsePipes} from "@nestjs/common";
 import { AppService } from "./app.service";
 import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservices";
 import { AuthDto } from "./dto/auth.dto";
 import { ValidationPipe } from "./pipes/validation.pipe";
 import { FilmDTO } from "./dto/filmDTO";
 import { PersonDTO } from "./dto/personDTO";
+import {JwtAuthGuard} from "./guards/jwt-auth.guard";
+import {CommentDTO} from "./dto/commentDTO";
+import {CreateRoleDto} from "./dto/createRoleDTO";
 
 @Controller()
 export class AppController {
@@ -38,6 +41,13 @@ export class AppController {
   async onModuleInit() {
     await this.clientUsers.connect();
     await this.clientData.connect();
+  }
+
+  @UsePipes(ValidationPipe)
+  @Post("/createRole")
+  async createRole(@Body() dto: CreateRoleDto) {
+    const role = await this.clientUsers.send("createRole", dto).toPromise();
+    return role;
   }
 
 
@@ -149,6 +159,15 @@ export class AppController {
     }).toPromise();
 
     return films;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("/:filmId")
+  async createComment(@Param("filmId") filmId: number, @Body() dto: CommentDTO, @Req() req) {
+    const userId = req.user.id;
+    const parentId = req.user.id;
+    const comment = await this.clientData.send("createComment", { filmId, dto, userId, parentId }).toPromise();
+    return comment;
   }
 
 }
