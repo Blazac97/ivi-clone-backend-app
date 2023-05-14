@@ -28,10 +28,19 @@ export class GenresService {
     return genres;
   }
 
-  async createGenre(dto: GenreDTO) {
-    const genre = await this.genreRepository.create(dto);
-    return genre;
+  async searchGenresByName(genreName: string) {
+    const genres = await this.genreRepository.findAll({
+      where: {
+        [Op.or]: [
+          { nameRu: { [Op.iLike]: `%${genreName}%` } },
+          { nameEn: { [Op.iLike]: `%${genreName}%` } }
+        ]
+      },
+      limit: 10
+    });
+    return genres;
   }
+
 
   async updateGenre(id: number, dto: GenreDTO) {
     const genre = await this.genreRepository.update({ ...dto }, { where: { id: id } });

@@ -37,19 +37,14 @@ export class JwtAuthGuard implements CanActivate {
             }
 
             //  вызов метода verify объекта сервиса JwtService для проверки подлинности JWT токена.
-            try {
-                const user = this.jwtService.verify(token);
-                console.log(user)
-                // сохранение данных пользователя в объекте запроса
-                req.user = user;
-                console.log(req.user)
-                // возврат значения true, если пользователь авторизован.
-                return true;
-                // код, который работает с верифицированным пользователем
-            } catch (error) {
-                console.log(error.message);
-                // обработка ошибки
-            }
+            const user = this.jwtService.verify(token);
+
+            // сохранение данных пользователя в объекте запроса
+            req.user = user;
+
+            // возврат значения true, если пользователь авторизован.
+            return true;
+
 
         } catch (e) {
             // выброс исключения UnauthorizedException, если пользователь не авторизован.

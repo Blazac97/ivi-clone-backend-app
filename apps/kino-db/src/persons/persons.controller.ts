@@ -1,22 +1,33 @@
-import { Controller } from '@nestjs/common';
-import { ProfessionsService } from "../professions/professions.service";
-import { MessagePattern, Payload } from "@nestjs/microservices";
-import { PersonsService } from "./persons.service";
-import { PersonDTO } from "./dto/personDTO";
+import {Controller} from '@nestjs/common';
+import {ProfessionsService} from "../professions/professions.service";
+import {MessagePattern, Payload} from "@nestjs/microservices";
+import {PersonsService} from "./persons.service";
+import {PersonDTO} from "./dto/personDTO";
 
 @Controller('persons')
 export class PersonsController {
 
-  constructor(private readonly personsService: PersonsService,
-  ) {}
+    constructor(private readonly personsService: PersonsService,
+    ) {
+    }
 
-  @MessagePattern('getPersonById')
-  async getPersonById(@Payload() id: number) {
-    return  await this.personsService.getPersonById(id);
-  }
+    @MessagePattern('getPersonById')
+    async getPersonById(@Payload() id: number) {
+        return await this.personsService.getPersonById(id);
+    }
 
-  @MessagePattern('createPersons')
-  async createPersons(@Payload() dtos: PersonDTO[]) {
-    return  await this.personsService.createPersons(dtos);
-  }
+    @MessagePattern("searchPersonsByName")
+    async searchPersonsByName(@Payload() name: string) {
+        return await this.personsService.searchPersonsByName(name);
+    }
+
+    @MessagePattern("findPersonsByNameAndProfession")
+    async findPersonsByNameAndProfession(@Payload() data: {
+        id: number, name: string
+    }) {
+        const {
+            id, name
+        } = data;
+        return await this.personsService.findPersonsByNameAndProfession(name, id);
+    }
 }
