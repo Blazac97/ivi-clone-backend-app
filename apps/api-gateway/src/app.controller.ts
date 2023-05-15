@@ -175,15 +175,15 @@ export class AppController {
         const genres = await this.clientData.send("searchGenresByName", name).toPromise();
 
         const filmDto = films.map((film) => {
-            return {nameRu: film.filmNameRu, nameEn: film.filmNameEn};
+            return {id: film.id, nameRu: film.filmNameRu, nameEn: film.filmNameEn};
         });
 
         const peopleDto = people.map((person) => {
-            return {nameRu: person.nameRu, nameEn: person.nameEn};
+            return {id: person.id, nameRu: person.nameRu, nameEn: person.nameEn};
         });
 
         const genreDto = genres.map((genre) => {
-            return {nameRu: genre.nameRu, nameEn: genre.nameEn};
+            return {id: genre.id, nameRu: genre.nameRu, nameEn: genre.nameEn};
         });
 
         return {
