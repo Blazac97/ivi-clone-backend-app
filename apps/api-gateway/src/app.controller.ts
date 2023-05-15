@@ -169,9 +169,9 @@ export class AppController {
     @Get("/search")
     async search(@Query("name") name?: string) {
 
-        const films = await this.clientData.send("searchFilmsByName", {name}).toPromise();
-        const people = await this.clientData.send("searchFilmsByName", {name}).toPromise();
-        const genres = await this.clientData.send("searchFilmsByName", {name}).toPromise();
+        const films = await this.clientData.send("searchFilmsByName", name).toPromise();
+        const people = await this.clientData.send("searchPersonsByName", name).toPromise();
+        const genres = await this.clientData.send("searchGenresByName", name).toPromise();
 
         const filmDto = films.map((film) => {
             return {nameRu: film.filmNameRu, nameEn: film.filmNameRu};

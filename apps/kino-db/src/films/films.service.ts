@@ -143,12 +143,10 @@ export class FilmsService {
       limit: 10
     });
 
-    if (!films || films.length === 0) {
-      throw new Error(`No films found with name ${name}`);
-    }
 
     return films;
   }
+
 
   // async filmFilters(page: number, perPage: number, genres?: string[], countries?: string[], persons?: string[], minRatingKp: number = 0, minVotesKp: number = 0, sortBy?: string) {
   //   const include = [];
@@ -236,7 +234,7 @@ export class FilmsService {
     } else if (sortBy === "novelty") {
       order.push(["premiereWorldDate", "DESC"]);
     } else if (sortBy === "alphabet") {
-      order.push(["nameRu", "ASC"]);
+      order.push(["filmNameRu", "ASC"]);
     } else {
       order.push(["votesKp", "DESC"]);
     }

@@ -30,21 +30,21 @@ export class PersonsService {
             include: {
                 model: Profession,
                 where: { id: professionId },
-                through: { attributes: [] }
+                through: { attributes: [] },
             },
             where: {
                 [Op.and]: [
                     {
                         [Op.or]: [
                             { nameRu: { [Op.iLike]: `%${personName}%` } },
-                            { nameEn: { [Op.iLike]: `%${personName}%` } }
-                        ]
+                            { nameEn: { [Op.iLike]: `%${personName}%` } },
+                        ],
                     },
-                    Sequelize.literal(`"Profession->_PersonToProfession"."B" = ${professionId}`)
-                ]
+                ],
             },
-            limit: 10
+            limit: 10,
         });
+
         return people;
     }
 
