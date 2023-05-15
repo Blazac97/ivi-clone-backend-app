@@ -1,3 +1,4 @@
+
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, UsePipes} from "@nestjs/common";
 import {AppService} from "./app.service";
 import {ClientProxy, ClientProxyFactory, Transport} from "@nestjs/microservices";
@@ -10,6 +11,7 @@ import {CommentDTO} from "./dto/commentDTO";
 import {CreateRoleDto} from "./dto/createRoleDTO";
 import {UpdateFilmDTO} from "../../kino-db/src/films/dto/updateFilmDTO";
 import {GenreDTO} from "./dto/genreDTO";
+
 
 @Controller()
 export class AppController {
@@ -134,7 +136,6 @@ export class AppController {
         return response;
     }
 
-
     @Get("/films")
     async filters(@Query("page") page: number,
                   @Query("perPage") perPage: number,
@@ -199,6 +200,4 @@ export class AppController {
 
         return people;
     }
-
-
 }

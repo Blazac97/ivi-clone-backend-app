@@ -63,9 +63,7 @@ export class FilmsService {
     if (!film) {
       return null;
     }
-
     const similarFilms = await this.findFilmsByGenre(film.genres.map(g => g.nameRu));
-
     return {
       film,
       similarFilms
