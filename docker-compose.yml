@@ -8,7 +8,7 @@ services:
     command: >
       sh -c "sleep 15 && npm run start:dev api-gateway"
     depends_on:
-      - auth-users
+      - auth-user
       - kino-db
       - rabbitmq
       - db
