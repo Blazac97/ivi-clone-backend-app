@@ -175,7 +175,7 @@ export class AppController {
         const genres = await this.clientData.send("searchGenresByName", name).toPromise();
 
         const filmDto = films.map((film) => {
-            return {nameRu: film.filmNameRu, nameEn: film.filmNameRu};
+            return {nameRu: film.filmNameRu, nameEn: film.filmNameEn};
         });
 
         const peopleDto = people.map((person) => {
