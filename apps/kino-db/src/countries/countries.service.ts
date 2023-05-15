@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Genre } from "../genres/genres.model";
 import { Country } from "./countries.model";
-import { where } from "sequelize";
+import {Op, where} from "sequelize";
 import { CountryDTO } from "./dto/countryDTO";
 
 @Injectable()
@@ -20,8 +20,11 @@ export class CountriesService {
   async findCountryByName(countryNames: string[]){
     const countries = await this.countryRepository.findAll({
       where: {
-        countryName: countryNames,
-      },
+        [Op.or]: [
+          { countryName: countryNames },
+          { countryNameEn: countryNames }
+        ]
+      }
     });
     return countries;
   }

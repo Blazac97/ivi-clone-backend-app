@@ -63,9 +63,7 @@ export class FilmsService {
     if (!film) {
       return null;
     }
-
     const similarFilms = await this.findFilmsByGenre(film.genres.map(g => g.nameRu));
-
     return {
       film,
       similarFilms
@@ -90,72 +88,16 @@ export class FilmsService {
     return films;
   }
 
-  async createFilm(dto: FilmDTO) {
-
-    const film = await this.filmRepository.create(dto);
-
-    const fact = await this.factService.createFact(dto.fact, film.id);
-
-    await this.processDTO(dto, film);
-
-    return film;
-  }
-
-  async updateFilm(id: number, dto: FilmDTO) {
+  async updateFilm(id: number, dto: UpdateFilmDTO) {
 
     const film = await this.filmRepository.findByPk(id);
     if (!film) {
       throw new Error(`Film with id ${id} not found`);
     }
 
-    const updateDto: UpdateFilmDTO = { ...dto };
-    await this.filmRepository.update({ ...updateDto }, { where: { id } });
-
-    const fact = await this.factService.updateFact(dto.fact, id);
-
-    await this.processDTO(dto, film);
+    await this.filmRepository.update({ ...dto }, { where: { id } });
 
     return film;
-  }
-
-  async processDTO(dto: FilmDTO, film: Film) {
-    const countryNames = dto.countries.map((c: CountryDTO) => c.countryName);
-    const countries = await this.countryService.findCountryByName(countryNames);
-    if (countries.includes(null)) {
-      throw new Error("One or more country names could not be found");
-    }
-    const countryIds = countries.map((c: Country) => c.id);
-    await film.$set("countries", countryIds);
-    film.countries = countries;
-
-    const genreNames = dto.genres.map((g: GenreDTO) => g.nameRu);
-    const genres = await this.genreService.findGenreByNameRU(genreNames);
-    if (genres.includes(null)) {
-      throw new Error("One or more genre names could not be found");
-    }
-    const genreIds = genres.map((g: Genre) => g.id);
-    await film.$set("genres", genreIds);
-    film.genres = genres;
-
-    const personNames = dto.persons.map(p => p.nameRu);
-    const persons = await this.personService.findPersonByNameRU(personNames);
-    const createdPersons = [];
-    const personsToCreate = [];
-    for (const personDTO of dto.persons) {
-      const person = persons.find(p => p.nameRu === personDTO.nameRu);
-      if (!person) {
-        personsToCreate.push(personDTO);
-      } else {
-        createdPersons.push(person);
-      }
-    }
-    if (personsToCreate.length > 0) {
-      const newPersons = await this.personService.createPersons(personsToCreate);
-      createdPersons.push(...newPersons);
-    }
-    const personIds = createdPersons.map(p => p.id);
-    await film.$set("persons", personIds);
-    film.persons = createdPersons;
   }
 
   async getAllFilms() {
@@ -188,7 +130,79 @@ export class FilmsService {
     return film;
   }
 
-  async filmFilters(page: number, perPage: number, genres?: string[], countries?: string[], persons?: string[], minRatingKp: number = 0, minVotesKp: number = 0, sortBy?: string) {
+  async searchFilmsByName(name: string) {
+    const films = await this.filmRepository.findAll({
+      where: {
+        [Op.or]: [
+          { filmNameRu: { [Op.like]: `%${name}%` } },
+          { filmNameEn: { [Op.like]: `%${name}%` } }
+        ]
+      },
+      limit: 10
+    });
+
+
+    return films;
+  }
+
+
+  // async filmFilters(page: number, perPage: number, genres?: string[], countries?: string[], persons?: string[], minRatingKp: number = 0, minVotesKp: number = 0, sortBy?: string) {
+  //   const include = [];
+  //   if (genres) {
+  //     include.push({
+  //       model: Genre,
+  //       where: {
+  //         [Op.or]: [
+  //           { nameRu: genres },
+  //           { nameEn: genres }
+  //         ]
+  //       }
+  //     });
+  //   }
+  //   if (countries) include.push({ model: Country, where: { countryName: countries } });
+  //   if (persons) include.push({
+  //     model: Person,
+  //     where: {
+  //       [Op.or]: [
+  //         { nameRu: persons },
+  //         { nameEn: persons }
+  //       ]
+  //     }
+  //   });
+  //
+  //   const order = [];
+  //   if (sortBy === "rating") {
+  //     order.push(["ratingKp", "DESC"]);
+  //   } else if (sortBy === "novelty") {
+  //     order.push(["premiereWorldDate", "DESC"]);
+  //   } else {
+  //     order.push(["votesKp", "DESC"]);
+  //   }
+  //
+  //   const films = await this.filmRepository.findAll({
+  //     include,
+  //     where: {
+  //       ratingKp: { [Op.gte]: minRatingKp },
+  //       votesKp: { [Op.gte]: minVotesKp }
+  //     },
+  //     limit: perPage,
+  //     offset: (page - 1) * perPage,
+  //     order
+  //   });
+  //   return films;
+  // }
+
+  async filmFilters(
+      page: number,
+      perPage: number,
+      genres?: string[],
+      countries?: string[],
+      persons?: string[],
+      minRatingKp: number = 0,
+      minVotesKp: number = 0,
+      sortBy?: string,
+      year?: number
+  ) {
     const include = [];
     if (genres) {
       include.push({
@@ -217,22 +231,30 @@ export class FilmsService {
       order.push(["ratingKp", "DESC"]);
     } else if (sortBy === "novelty") {
       order.push(["premiereWorldDate", "DESC"]);
+    } else if (sortBy === "alphabet") {
+      order.push(["filmNameRu", "ASC"]);
     } else {
       order.push(["votesKp", "DESC"]);
     }
 
+    const where: any = {
+      ratingKp: { [Op.gte]: minRatingKp },
+      votesKp: { [Op.gte]: minVotesKp }
+    };
+    if (year) {
+      where.year = year;
+    }
+
     const films = await this.filmRepository.findAll({
       include,
-      where: {
-        ratingKp: { [Op.gte]: minRatingKp },
-        votesKp: { [Op.gte]: minVotesKp }
-      },
+      where,
       limit: perPage,
       offset: (page - 1) * perPage,
       order
     });
     return films;
   }
+
 
 
   async getAllFilmYears() {
