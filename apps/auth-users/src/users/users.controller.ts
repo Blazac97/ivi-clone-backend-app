@@ -3,6 +3,7 @@ import { MessagePattern, Payload } from "@nestjs/microservices";
 import { CreateUserDto } from "./dto/createUserDto";
 import { UsersService } from "./users.service";
 import { AuthDto } from "./dto/auth.dto";
+import {OauthCreateUserDTO} from "./dto/oauthCreateUserDTO";
 
 
 @Controller('users')
@@ -14,13 +15,16 @@ export class UsersController {
 
   @MessagePattern('registration')
   async registration(@Payload() dto: CreateUserDto) {
-    console.log(dto)
     return  await this.usersService.createUser(dto);
+  }
+
+  @MessagePattern('outRegistration')
+  async outRegistration(@Payload() dto: OauthCreateUserDTO) {
+    return  await this.usersService.oauthCreateUser(dto);
   }
 
   @MessagePattern('login')
   async login(@Payload() dto: AuthDto) {
-    console.log(dto)
     return  await this.usersService.login(dto);
   }
 

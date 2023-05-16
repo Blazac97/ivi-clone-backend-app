@@ -11,6 +11,8 @@ import {CommentDTO} from "./dto/commentDTO";
 import {CreateRoleDto} from "./dto/createRoleDTO";
 import {UpdateFilmDTO} from "../../kino-db/src/films/dto/updateFilmDTO";
 import {GenreDTO} from "./dto/genreDTO";
+import {CreateUserDto} from "../../auth-users/src/users/dto/createUserDto";
+import {OauthCreateUserDTO} from "./dto/oauthCreateUserDTO";
 
 
 @Controller()
@@ -57,17 +59,23 @@ export class AppController {
 
     @UsePipes(ValidationPipe)
     @Post("/registration")
-    async registrationUser(@Body() dto: AuthDto) {
-        const user = await this.clientUsers.send("registration", dto).toPromise();
-        return user;
+    async registrationUser(@Body() dto: CreateUserDto) {
+        const data = await this.clientUsers.send("registration", dto).toPromise();
+        return {User: data.user, token: data.token};
+    }
+
+    @UsePipes(ValidationPipe)
+    @Post("/outRegistration")
+    async outRegistrationUser(@Body() dto: OauthCreateUserDTO) {
+        const data = await this.clientUsers.send("outRegistration", dto).toPromise();
+        return {User: data.user, token: data.token};
     }
 
     @UsePipes(ValidationPipe)
     @Post("/login")
     async loginUser(@Body() dto: AuthDto) {
-        const user = await this.clientUsers.send("login", dto).toPromise();
-
-        return user;
+        const data = await this.clientUsers.send("login", dto).toPromise();
+        return {Email: data.user.email, token: data.token};
     }
 
 
