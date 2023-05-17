@@ -43,7 +43,7 @@ export class GenresService {
 
 
   async updateGenre(id: number, dto: GenreDTO) {
-    const genre = await this.genreRepository.update({ ...dto }, { where: { id: id } });
+    const genre = await this.genreRepository.update({nameRu: dto.nameRu, nameEn: dto.nameEn }, { where: { id: id } });
     return genre;
   }
 

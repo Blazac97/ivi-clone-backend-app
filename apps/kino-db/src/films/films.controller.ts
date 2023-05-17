@@ -20,7 +20,8 @@ export class FilmsController {
     @MessagePattern("updateFilm")
     async updateFilm(@Payload() data: { id: number, dto: UpdateFilmDTO }) {
         const {id, dto} = data;
-        return await this.filmService.updateFilm(id, dto);
+        await this.filmService.updateFilm(id, dto);
+        return HttpStatus.OK;
     }
 
     @MessagePattern("getAllFilms")
