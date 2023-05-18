@@ -83,7 +83,8 @@ export class FilmsService {
                         ]
                     }
                 }
-            ]
+            ],
+            limit: 10
         });
 
         return films;

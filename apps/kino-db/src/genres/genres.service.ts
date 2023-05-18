@@ -16,18 +16,6 @@ export class GenresService {
     return genres;
   }
 
-  async findGenreByNameRU(genreNames: string[]) {
-    const genres = await this.genreRepository.findAll({
-      where: {
-        [Op.or]: [
-          { nameRu: genreNames },
-          { nameEn: genreNames }
-        ]
-      }
-    });
-    return genres;
-  }
-
   async searchGenresByName(genreName: string) {
     const genres = await this.genreRepository.findAll({
       where: {
@@ -47,7 +35,4 @@ export class GenresService {
     return genre;
   }
 
-  async deleteGenre(id: number) {
-    await this.genreRepository.destroy({ where: { id: id } });
-  }
 }

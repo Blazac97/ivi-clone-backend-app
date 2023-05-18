@@ -26,9 +26,4 @@ export class GenresController {
     return HttpStatus.OK;
   }
 
-  @MessagePattern('deleteGenre')
-  async deleteGenre(@Payload() id: number) {
-    await this.genresService.deleteGenre(id);
-    return HttpStatus.OK;
-  }
 }
