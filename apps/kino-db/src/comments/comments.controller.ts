@@ -14,4 +14,9 @@ export class CommentsController {
         const {userId,dto,filmId,parentId} = data;
         return  await this.commentService.createComment(userId,parentId,filmId,dto);
     }
+
+    @MessagePattern('getCommentsByFilmId')
+    async getCommentsByFilmId(@Payload() id: number) {
+        return  await this.commentService.getAllCommentsByFilmId(id);
+    }
 }

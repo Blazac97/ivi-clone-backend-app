@@ -54,10 +54,6 @@ export class FilmsService {
                     model: Fact,
                     as: "fact"
                 },
-                {
-                    model: Comment,
-                    as: "comments"
-                }
             ]
         });
 

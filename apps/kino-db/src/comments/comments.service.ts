@@ -20,4 +20,16 @@ export class CommentsService {
         });
         return comment;
     }
+
+    async getAllCommentsByFilmId(id:number){
+    const comments = await this.commentRepository.findAll({
+        where:{
+            filmId:id
+        }
+    });
+    if (!comments) {
+      return null;
+    }
+    return comments;
+  }
 }

@@ -106,6 +106,12 @@ export class AppController {
         return film;
     }
 
+    @Get("/comments/:id")
+    async getCommentsByFilmId(@Param("id") id: number) {
+        const comments = await this.clientData.send("getCommentsByFilmId", id).toPromise();
+        return comments;
+    }
+
 
     @Patch("/film/:id")
     async updateFilm(@Param("id") id: number, @Body() dto: UpdateFilmDTO) {
