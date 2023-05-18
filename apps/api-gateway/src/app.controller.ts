@@ -171,8 +171,7 @@ export class AppController {
     @Post("/:filmId")
     async createComment(@Param("filmId") filmId: number, @Body() dto: CommentDTO, @Req() req) {
         const userId = req.user.id;
-        const parentId = req.user.id;
-        const comment = await this.clientData.send("createComment", {filmId, dto, userId, parentId}).toPromise();
+        const comment = await this.clientData.send("createComment", {filmId, dto, userId}).toPromise();
         return comment;
     }
 

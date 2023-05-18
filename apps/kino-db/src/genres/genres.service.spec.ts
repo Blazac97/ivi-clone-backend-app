@@ -33,7 +33,7 @@ describe('GenresService', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
