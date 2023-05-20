@@ -1,4 +1,17 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, UsePipes} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Query,
+    Req,
+    UseFilters,
+    UseGuards,
+    UsePipes
+} from "@nestjs/common";
 import {AppService} from "./app.service";
 import {ClientProxy, ClientProxyFactory, Transport} from "@nestjs/microservices";
 import {AuthDto} from "./dto/auth.dto";
@@ -9,8 +22,9 @@ import {GenreDTO} from "./dto/genreDTO";
 import {CreateUserDto} from "../../auth-users/src/users/dto/createUserDto";
 import {OauthCreateUserDTO} from "./dto/oauthCreateUserDTO";
 import {UpdateFilmDTO} from "./dto/updateFilmDTO";
+import {HttpExceptionFilter} from "./exceptions/httpExceptionFilter";
 
-
+@UseFilters(new HttpExceptionFilter())
 @Controller()
 export class AppController {
 
@@ -204,9 +218,14 @@ export class AppController {
 
     @Get("/findPersonsByNameAndProfession")
     async findPersonsByNameAndProfession(@Query("name") name?: string, @Query("id") id?: number) {
-
         const people = await this.clientData.send("findPersonsByNameAndProfession", {name, id}).toPromise();
-
         return people;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("/checkToken")
+    async checkToken(@Req() req) {
+        const user = req.user;
+        return user;
     }
 }

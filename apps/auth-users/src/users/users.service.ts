@@ -17,19 +17,13 @@ export class UsersService {
     }
 
     async login(dto: AuthDto) {
+
         const user = await this.validateUser(dto)
         const token = await this.generateToken(user)
+
         return {user, token};
     }
     async createUser(dto: CreateUserDto) {
-        return this.createUserWithRole(dto, "ADMIN");
-    }
-
-    async oauthCreateUser(dto: OauthCreateUserDTO) {
-        return this.createUserWithRole(dto, "ADMIN");
-    }
-
-    private async createUserWithRole(dto: CreateUserDto | OauthCreateUserDTO, roleName: string) {
         const candidate = await this.userRepository.findOne({
             where: { email: dto.email },
             include: { all: true },
@@ -40,6 +34,23 @@ export class UsersService {
                 HttpStatus.BAD_REQUEST
             );
         }
+        return this.createUserWithRole(dto, "ADMIN");
+    }
+
+    async oauthCreateUser(dto: OauthCreateUserDTO) {
+        const candidate = await this.userRepository.findOne({
+            where: { email: dto.email },
+            include: { all: true },
+        });
+        if (candidate) {
+            const authDto: AuthDto = {email:dto.email, password: 'SECRET_PASSWORD'};
+            return this.login(authDto)
+        }
+        return this.createUserWithRole(dto, "ADMIN");
+    }
+
+    private async createUserWithRole(dto: CreateUserDto | OauthCreateUserDTO, roleName: string) {
+
         const hashPassword = await bcrypt.hash(
             'password' in dto ? dto.password : 'SECRET_PASSWORD',
             5
@@ -53,16 +64,6 @@ export class UsersService {
         user.roles = [role];
         const token = await this.generateToken(user);
         return { user, token };
-    }
-
-    async getAllUsers() {
-        const users = await this.userRepository.findAll({include: {all: true}});
-        return users;
-    }
-
-    async getUserByEmail(email: string) {
-        const user = await this.userRepository.findOne({where: {email}, include: {all: true}});
-        return user;
     }
 
 
@@ -86,7 +87,6 @@ export class UsersService {
         } catch (e) {
             throw new UnauthorizedException({message: 'Некорректный email или пароль'})
         }
-
     }
 
     async generateToken(user: User) {
