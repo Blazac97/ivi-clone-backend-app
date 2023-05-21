@@ -5,5 +5,4 @@ export class OauthCreateUserDTO {
     @IsEmail({}, {message: "Некорректный email"})
     readonly email: string;
 
-    profileId: number;
 }

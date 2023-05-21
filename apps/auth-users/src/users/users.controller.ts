@@ -12,7 +12,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService,
   ) {}
 
-
   @MessagePattern('registration')
   async registration(@Payload() dto: CreateUserDto) {
     return  await this.usersService.createUser(dto);
