@@ -127,11 +127,11 @@ describe('UsersController', () => {
     describe('outRegistration', () => {
         it('should register a new user if not registered', async () => {
 
-            await service.oauthCreateUser(mockUserDTO)
+            await service.oauthCreateUser(mockOauthUserDTO)
 
-            const result = await controller.outRegistration(mockUserDTO);
+            const result = await controller.outRegistration(mockOauthUserDTO);
 
-            expect(service.oauthCreateUser).toHaveBeenCalledWith(mockUserDTO);
+            expect(service.oauthCreateUser).toHaveBeenCalledWith(mockOauthUserDTO);
             expect(result).toEqual({
                 user: mockUser,
                 token: {

@@ -22,10 +22,6 @@ import {FilmPerson} from "./filmPerson";
 export class FilmsService {
 
     constructor(@InjectModel(Film) private filmRepository: typeof Film,
-                private countryService: CountriesService,
-                private factService: FactsService,
-                private genreService: GenresService,
-                private personService: PersonsService
     ) {
     }
 

@@ -17,12 +17,11 @@ export class UsersService {
     }
 
     async login(dto: AuthDto) {
-
         const user = await this.validateUser(dto)
         const token = await this.generateToken(user)
-
         return {user, token};
     }
+
     async createUser(dto: CreateUserDto) {
         const candidate = await this.userRepository.findOne({
             where: { email: dto.email },
@@ -49,7 +48,7 @@ export class UsersService {
         return this.createUserWithRole(dto, "ADMIN");
     }
 
-    private async createUserWithRole(dto: CreateUserDto | OauthCreateUserDTO, roleName: string) {
+    async createUserWithRole(dto: CreateUserDto | OauthCreateUserDTO, roleName: string) {
 
         const hashPassword = await bcrypt.hash(
             'password' in dto ? dto.password : 'SECRET_PASSWORD',
@@ -64,17 +63,6 @@ export class UsersService {
         user.roles = [role];
         const token = await this.generateToken(user);
         return { user, token };
-    }
-
-
-    async addRole(dto: AddRoleDto) {
-        const user = await this.userRepository.findByPk(dto.userId);
-        const role = await this.roleService.getRoleByValue(dto.value);
-        if (role && user) {
-            await user.$add('role', role.id);
-            return dto;
-        }
-        throw new HttpException('Пользователь или роль не найдены', HttpStatus.NOT_FOUND);
     }
 
     async validateUser(dto: AuthDto) {
