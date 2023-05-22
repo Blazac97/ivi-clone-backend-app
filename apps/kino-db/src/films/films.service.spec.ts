@@ -7,6 +7,11 @@ import {RolesService} from "../../../auth-users/src/roles/roles.service";
 import {JwtService} from "@nestjs/jwt";
 import {Film} from "./films.model";
 import {Fact} from "../facts/facts.model";
+import {Op, Sequelize} from "sequelize";
+import {Genre} from "../genres/genres.model";
+import {Country} from "../countries/countries.model";
+import {Person} from "../persons/persons.model";
+import {Profession} from "../professions/professions.model";
 
 describe('FilmsService', () => {
   let service: FilmsService;
@@ -54,6 +59,7 @@ describe('FilmsService', () => {
     findByPk: jest.fn().mockResolvedValue(mockFilm.id),
     update: jest.fn().mockResolvedValue(mockFilm.id).mockResolvedValue(mockUpdateDto),
     destroy: jest.fn().mockResolvedValue(mockFilm.id),
+    findOne: jest.fn().mockResolvedValue(mockFilm),
   };
 
   beforeEach(async () => {
@@ -138,6 +144,182 @@ describe('FilmsService', () => {
       jest.spyOn(mockFilmsRepository, 'findByPk').mockResolvedValue(null);
 
       await expect(service.deleteFilm(mockFilm.id)).rejects.toThrow(`Film with id ${mockFilm.id} not found`);
+    });
+  });
+
+  describe('getFilmByName', () => {
+    it('should return the film with the provided name', async () => {
+      const name = 'Film Title';
+
+      jest.spyOn(mockFilmsRepository, 'findOne').mockResolvedValue(mockFilm);
+
+      const result = await service.getFilmByName(name);
+
+      expect(mockFilmsRepository.findOne).toHaveBeenCalledWith({
+        where: {
+          [Op.or]: [
+            { filmNameRu: name },
+            { filmNameEn: name },
+          ],
+        },
+      });
+      expect(result).toEqual(mockFilm);
+    });
+
+    it('should throw an error if the film with the provided name is not found', async () => {
+      const name = 'Nonexistent Film';
+
+      jest.spyOn(mockFilmsRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(service.getFilmByName(name)).rejects.toThrow(`Film with name ${name} not found`);
+    });
+  });
+
+  describe('searchFilmsByName', () => {
+    it('should return films matching the provided name', async () => {
+      const name = 'Film';
+
+      jest.spyOn(mockFilmsRepository, 'findAll').mockResolvedValue([mockFilm]);
+
+      const result = await service.searchFilmsByName(name);
+
+      expect(mockFilmsRepository.findAll).toHaveBeenCalledWith({
+        where: {
+          [Op.or]: [
+            { filmNameRu: { [Op.like]: `%${name}%` } },
+            { filmNameEn: { [Op.like]: `%${name}%` } },
+          ],
+        },
+        limit: 10,
+      });
+      expect(result).toEqual([mockFilm]);
+    });
+  });
+
+  describe('getAllFilmYears', () => {
+    it('should return all distinct film years in ascending order', async () => {
+      const mockYears = [
+        { year: 2000 },
+        { year: 2001 },
+        { year: 2002 },
+      ];
+
+      jest.spyOn(mockFilmsRepository, 'findAll').mockResolvedValue(mockYears);
+
+      const result = await service.getAllFilmYears();
+
+      expect(mockFilmsRepository.findAll).toHaveBeenCalledWith({
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('year')), 'year']],
+        order: [[Sequelize.col('year'), 'ASC']],
+      });
+      expect(result).toEqual([2000, 2001, 2002]);
+    });
+  });
+
+  describe('filmFilters', () => {
+    it('should return filtered films based on provided parameters', async () => {
+      const mockPage = 1;
+      const mockPerPage = 10;
+      const mockGenres = ['Action', 'Thriller'];
+      const mockCountries = ['USA', 'UK'];
+      const mockPersons = ['Tom Cruise', 'Brad Pitt'];
+      const mockMinRatingKp = 7;
+      const mockMinVotesKp = 1000;
+      const mockSortBy = 'rating';
+      const mockYear = 2022;
+
+
+      jest.spyOn(mockFilmsRepository, 'findAll').mockResolvedValue([mockFilm]);
+
+      const result = await service.filmFilters(
+          mockPage,
+          mockPerPage,
+          mockGenres,
+          mockCountries,
+          mockPersons,
+          mockMinRatingKp,
+          mockMinVotesKp,
+          mockSortBy,
+          mockYear
+      );
+
+      expect(mockFilmsRepository.findAll).toHaveBeenCalledWith({
+        include: [
+          {
+            model: Genre,
+            where: {
+              [Op.or]: [
+                { nameRu: mockGenres },
+                { nameEn: mockGenres },
+              ],
+            },
+          },
+          {
+            model: Country,
+            where: { countryName: mockCountries },
+          },
+          {
+            model: Person,
+            where: {
+              [Op.or]: [
+                { nameRu: mockPersons },
+                { nameEn: mockPersons },
+              ],
+            },
+          },
+        ],
+        where: {
+          ratingKp: { [Op.gte]: mockMinRatingKp },
+          votesKp: { [Op.gte]: mockMinVotesKp },
+          year: mockYear,
+        },
+        limit: mockPerPage,
+        offset: (mockPage - 1) * mockPerPage,
+        order: [['ratingKp', 'DESC']],
+      });
+      expect(result).toEqual([mockFilm]);
+    });
+  });
+
+  describe('getFilmById', () => {
+    it('should return the film with the specified ID and similar films', async () => {
+
+      jest.spyOn(mockFilmsRepository, 'findByPk').mockResolvedValue(mockFilm);
+      jest.spyOn(service, 'findFilmsByGenre').mockResolvedValue([mockFilm as unknown as Film]);
+
+      const result = await service.getFilmById(mockFilm.id);
+
+      expect(mockFilmsRepository.findByPk).toHaveBeenCalledWith(mockFilm.id, {
+        include: [
+          {
+            model: Person,
+            as: 'persons',
+            include: [
+              {
+                model: Profession,
+                as: 'professions',
+              },
+            ],
+          },
+          {
+            model: Country,
+            as: 'countries',
+          },
+          {
+            model: Genre,
+            as: 'genres',
+          },
+          {
+            model: Fact,
+            as: 'fact',
+          },
+        ],
+      });
+      expect(service.findFilmsByGenre).toHaveBeenCalledWith(mockFilm.genres.map(g => g.nameRu));
+      expect(result).toEqual({
+        film: mockFilm,
+        similarFilms: [mockFilm],
+      });
     });
   });
 });
