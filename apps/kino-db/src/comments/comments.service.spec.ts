@@ -13,11 +13,13 @@ describe('CommentsService', () => {
     authorId: 2,
     parentId: 3,
     filmId: 134,
+    nickName: "Admin"
   };
   const mockCommentDTO = {
     header: 'This is header',
     value: 'This is value',
     parentId: 3,
+    nickName: "Admin"
   };
   const mockCommentsRepository = {
     create: jest.fn().mockResolvedValue(mockComment),
@@ -50,7 +52,6 @@ describe('CommentsService', () => {
     it('should create comment', async () => {
       const result = await service.createComment(
         mockComment.authorId,
-        mockComment.parentId,
         mockComment.filmId,
         mockCommentDTO,
       );
@@ -75,6 +76,7 @@ describe('CommentsService', () => {
           authorId: 2,
           parentId: null,
           filmId: 134,
+          nickName: "Admin"
         },
         {
           id: 2,
@@ -83,6 +85,7 @@ describe('CommentsService', () => {
           authorId: 3,
           parentId: 1,
           filmId: 134,
+          nickName: "Lover1703"
         },
       ];
 

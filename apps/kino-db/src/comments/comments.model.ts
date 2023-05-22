@@ -5,6 +5,7 @@ interface CommentCreationAtt {
     header:string;
     value:string;
     authorId:number;
+    nickName:string
     parentId:number;
     filmId:number;
 }
@@ -24,11 +25,15 @@ export class Comment extends Model<Comment,CommentCreationAtt> {
     @Column({type:DataType.INTEGER,})
     authorId:number
 
+
     @Column({type:DataType.INTEGER,})
     parentId:number
 
     @Column({type:DataType.DATE, defaultValue: DataType.NOW })
     createdAt:Date
+
+    @Column({type:DataType.INTEGER,})
+    nickName:number
 
     @ForeignKey(() => Film)
     @Column

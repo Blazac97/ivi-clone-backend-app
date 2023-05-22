@@ -9,12 +9,13 @@ export class CommentsService {
     constructor(@InjectModel(Comment) private commentRepository: typeof Comment) {
     }
 
-    async createComment(userId: number, parentId: number, filmId: number, dto: CommentDTO) {
+    async createComment(userId: number, filmId: number, dto: CommentDTO) {
         const comment = await this.commentRepository.create({
             header: dto.header,
             value: dto.value,
             authorId: userId,
-            parentId: parentId,
+            nickName: dto.nickName,
+            parentId: dto.parentId,
             filmId: filmId
         });
         return comment;

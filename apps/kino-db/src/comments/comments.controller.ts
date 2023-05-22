@@ -10,9 +10,9 @@ export class CommentsController {
     }
 
     @MessagePattern('createComment')
-    async createComment(@Payload() data: { userId: number,  dto: CommentDTO, filmId: number }) {
-        const {userId,dto,filmId} = data;
-        return  await this.commentService.createComment(userId,dto.parentId,filmId,dto);
+    async createComment(@Payload() data: { userId: number,  filmId: number,  dto: CommentDTO }) {
+        const {userId,filmId,dto} = data;
+        return  await this.commentService.createComment(userId,  filmId,  dto);
     }
 
     @MessagePattern('getCommentsByFilmId')
