@@ -15,7 +15,6 @@ async function start() {
       },
     },
   });
-  app.useGlobalFilters(new HttpExceptionFilter());
   app.listen();
 }
 

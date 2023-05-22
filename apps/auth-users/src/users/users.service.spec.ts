@@ -37,7 +37,6 @@ describe('UsersService', () => {
     };
 
     const mockRole = {id: 1, value: 'ADMIN'};
-    const mockAddRoleDto = {value: 'ADMIN', userId: 1};
 
     const mockUsersRepository = {
         create: jest.fn().mockResolvedValue(mockUser),

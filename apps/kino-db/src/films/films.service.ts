@@ -2,21 +2,13 @@ import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
 import {Person} from "../persons/persons.model";
 import {Film} from "./films.model";
-import {FilmDTO} from "./dto/filmDTO";
-import {CountriesService} from "../countries/countries.service";
-import {FactsService} from "../facts/facts.service";
-import {GenresService} from "../genres/genres.service";
-import {PersonsService} from "../persons/persons.service";
-import {CountryDTO} from "../countries/dto/countryDTO";
 import {Country} from "../countries/countries.model";
-import {GenreDTO} from "../genres/dto/genreDTO";
 import {Genre} from "../genres/genres.model";
 import {UpdateFilmDTO} from "./dto/updateFilmDTO";
 import {Profession} from "../professions/professions.model";
 import {Fact} from "../facts/facts.model";
 import sequelize, {Op, Sequelize} from "sequelize";
-import {Comment} from "../comments/comments.model";
-import {FilmPerson} from "./filmPerson";
+
 
 @Injectable()
 export class FilmsService {
