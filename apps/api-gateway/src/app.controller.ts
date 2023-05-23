@@ -80,7 +80,7 @@ export class AppController {
     @Post("/login")
     async loginUser(@Body() dto: AuthDto) {
         const data = await this.clientUsers.send("login", dto).toPromise();
-        return {email: data.user.email, userId: data.user.id ,token: data.token};
+        return {email: data.user.email, userId: data.user.id, role: data.user.roles ,token: data.token};
     }
 
 
