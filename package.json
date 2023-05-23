@@ -27,6 +27,7 @@
     "@nestjs/microservices": "^9.4.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/sequelize": "^9.0.2",
+    "@nestjs/swagger": "^6.3.0",
     "amqp-connection-manager": "^4.1.12",
     "amqplib": "^0.10.3",
     "bcryptjs": "^2.4.3",

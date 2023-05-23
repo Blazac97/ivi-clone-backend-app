@@ -1,17 +1,4 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post,
-    Query,
-    Req,
-    UseFilters,
-    UseGuards,
-    UsePipes
-} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, UsePipes} from "@nestjs/common";
 import {AppService} from "./app.service";
 import {ClientProxy, ClientProxyFactory, Transport} from "@nestjs/microservices";
 import {AuthDto} from "./dto/auth.dto";
@@ -22,9 +9,15 @@ import {GenreDTO} from "./dto/genreDTO";
 import {CreateUserDto} from "../../auth-users/src/users/dto/createUserDto";
 import {OauthCreateUserDTO} from "./dto/oauthCreateUserDTO";
 import {UpdateFilmDTO} from "./dto/updateFilmDTO";
-import {HttpExceptionFilter} from "./exceptions/httpExceptionFilter";
+import {ApiOperation, ApiResponse} from "@nestjs/swagger";
+import {RolesGuard} from "./guards/roles.guard";
+import {Roles} from "./guards/roles-auth.decorator";
+import {User} from "../../auth-users/src/users/users.model";
+import {Person} from "../../kino-db/src/persons/persons.model";
+import {Comment} from "../../kino-db/src/comments/comments.model";
+import {Film} from "../../kino-db/src/films/films.model";
 
-@UseFilters(new HttpExceptionFilter())
+
 @Controller()
 export class AppController {
 
@@ -59,7 +52,8 @@ export class AppController {
         await this.clientData.connect();
     }
 
-
+    @ApiOperation({summary: 'Регистрация'})
+    @ApiResponse({status: 200})
     @UsePipes(ValidationPipe)
     @Post("/registration")
     async registrationUser(@Body() dto: CreateUserDto) {
@@ -67,7 +61,8 @@ export class AppController {
         return {User: data.user, role: data.user.roles, token: data.token};
     }
 
-
+    @ApiOperation({summary: 'Авторизация через сьторонние сайты'})
+    @ApiResponse({status: 200})
     @UsePipes(ValidationPipe)
     @Post("/outRegistration")
     async outRegistrationUser(@Body() dto: OauthCreateUserDTO) {
@@ -76,14 +71,17 @@ export class AppController {
     }
 
 
+    @ApiOperation({summary: 'Логин'})
+    @ApiResponse({status: 200})
     @UsePipes(ValidationPipe)
     @Post("/login")
     async loginUser(@Body() dto: AuthDto) {
         const data = await this.clientUsers.send("login", dto).toPromise();
-        return {email: data.user.email, userId: data.user.id, role: data.user.roles ,token: data.token};
+        return {email: data.user.email, userId: data.user.id, role: data.user.roles, token: data.token};
     }
 
-
+    @ApiOperation({summary: 'фильтры для поиска'})
+    @ApiResponse({status: 200})
     @Get("/filters")
     async filters() {
         const genres = await this.clientData.send("getAll.genres", "").toPromise();
@@ -104,7 +102,8 @@ export class AppController {
         };
     }
 
-
+    @ApiOperation({summary: 'Получение персона по id'})
+    @ApiResponse({status: 200, type: [Person]})
     @Get("/person/:id")
     async getPersonById(@Param("id") id: number) {
         const person = await this.clientData.send("getPersonById", id).toPromise();
@@ -113,20 +112,26 @@ export class AppController {
 
     }
 
-
+    @ApiOperation({summary: 'Получение фильма по id'})
+    @ApiResponse({status: 200, type: [Film]})
     @Get("/film/:id")
     async getFilmById(@Param("id") id: number) {
         const film = await this.clientData.send("getFilmById", id).toPromise();
         return film;
     }
 
+    @ApiOperation({summary: 'Получение комента по id'})
+    @ApiResponse({status: 200, type: [Comment]})
     @Get("/comments/:id")
     async getCommentsByFilmId(@Param("id") id: number) {
         const comments = await this.clientData.send("getCommentsByFilmId", id).toPromise();
         return comments;
     }
 
-
+    @ApiOperation({summary: 'Изменение фильма'})
+    @ApiResponse({status: 200})
+    @UseGuards(RolesGuard)
+    @Roles('ADMIN')
     @Patch("/film/:id")
     async updateFilm(@Param("id") id: number, @Body() dto: UpdateFilmDTO) {
         const film = await this.clientData.send("updateFilm", {id, dto}).toPromise();
@@ -134,23 +139,27 @@ export class AppController {
         return film;
     }
 
-
+    @ApiOperation({summary: 'Удаление фильма'})
+    @ApiResponse({status: 200})
+    @UseGuards(RolesGuard)
+    @Roles('ADMIN')
     @Delete("/film/:id")
     async deleteFilmById(@Param("id") id: number) {
-        const response = await this.clientData.send("deleteFilmById", id).toPromise();
-
-        return response;
+        return await this.clientData.send("deleteFilmById", id).toPromise();
     }
 
-
+    @ApiOperation({summary: 'Изменение жанра'})
+    @ApiResponse({status: 200})
+    @UseGuards(RolesGuard)
+    @Roles('ADMIN')
+    @UsePipes(ValidationPipe)
     @Patch("/genre/:id")
     async updateGenre(@Param("id") id: number, @Body() dto: GenreDTO) {
-        const genre = await this.clientData.send("updateGenre", {id, dto}).toPromise();
-
-        return genre;
+        return await this.clientData.send("updateGenre", {id, dto}).toPromise();
     }
 
-
+    @ApiOperation({summary: 'Получение всех жанров'})
+    @ApiResponse({status: 200})
     @Get("/genres")
     async getAllGenres() {
         const genres = await this.clientData.send("getAll.genres", "").toPromise();
@@ -159,17 +168,18 @@ export class AppController {
         })
     }
 
-
+    @ApiOperation({summary: 'Поиск фильмов'})
+    @ApiResponse({status: 200, type: [Film]})
     @Get("/films")
     async films(@Query("page") page: number,
-                  @Query("perPage") perPage: number,
-                  @Query("genres") genres?: string[],
-                  @Query("countries") countries?: string[],
-                  @Query("persons") persons?: string[],
-                  @Query("minRatingKp") minRatingKp?: number,
-                  @Query("minVotesKp") minVotesKp?: number,
-                  @Query("sortBy") sortBy?: string,
-                  @Query("year") year?: number,) {
+                @Query("perPage") perPage: number,
+                @Query("genres") genres?: string[],
+                @Query("countries") countries?: string[],
+                @Query("persons") persons?: string[],
+                @Query("minRatingKp") minRatingKp?: number,
+                @Query("minVotesKp") minVotesKp?: number,
+                @Query("sortBy") sortBy?: string,
+                @Query("year") year?: number,) {
         const films = await this.clientData.send("filters", {
             page, perPage,
             genres, countries,
@@ -180,8 +190,10 @@ export class AppController {
         return films;
     }
 
-
+    @ApiOperation({summary: 'Создание комментария'})
+    @ApiResponse({status: 200, type: [Comment]})
     @UseGuards(JwtAuthGuard)
+    @UsePipes(ValidationPipe)
     @Post("/:filmId")
     async createComment(@Param("filmId") filmId: number, @Body() dto: CommentDTO, @Req() req) {
         const userId = req.user.id;
@@ -189,7 +201,7 @@ export class AppController {
         return comment;
     }
 
-
+    @ApiOperation({summary: 'Поиск по части имени'})
     @Get("/search")
     async search(@Query("name") name?: string) {
 
@@ -216,12 +228,18 @@ export class AppController {
         };
     }
 
+    @ApiOperation({summary: 'Получение персона по имени и id профессии'})
+    @ApiResponse({status: 200, type: [Person]})
     @Get("/findPersonsByNameAndProfession")
     async findPersonsByNameAndProfession(@Query("name") name?: string, @Query("id") id?: number) {
         const people = await this.clientData.send("findPersonsByNameAndProfession", {name, id}).toPromise();
         return people;
     }
 
+    @ApiOperation({summary: 'Получение пользователя по токену'})
+    @ApiResponse({status: 200, type: [User]})
+    @UseGuards(RolesGuard)
+    @Roles('ADMIN')
     @UseGuards(JwtAuthGuard)
     @Get("/checkToken")
     async checkToken(@Req() req) {

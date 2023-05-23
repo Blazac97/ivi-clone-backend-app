@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {HttpExceptionFilter} from "./exceptions/httpExceptionFilter";
 
 async function bootstrap() {
   const PORT = process.env.PORT || 5000;
