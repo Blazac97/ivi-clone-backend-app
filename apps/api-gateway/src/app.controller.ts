@@ -244,6 +244,10 @@ export class AppController {
     @Get("/checkToken")
     async checkToken(@Req() req) {
         const user = req.user;
-        return user;
+        const roles = req.user.roles;
+        return {
+            user: user,
+            roles: roles
+        };
     }
 }
