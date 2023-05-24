@@ -2,7 +2,6 @@ import {forwardRef, HttpException, HttpStatus, Inject, Injectable, UnauthorizedE
 import {InjectModel} from "@nestjs/sequelize";
 import {User} from './users.model';
 import {RolesService} from "../roles/roles.service";
-import {AddRoleDto} from "./dto/addRoleDto";
 import {CreateUserDto} from "./dto/createUserDto";
 import * as bcrypt from 'bcryptjs';
 import {AuthDto} from "./dto/auth.dto";
@@ -33,7 +32,7 @@ export class UsersService {
                 HttpStatus.BAD_REQUEST
             );
         }
-        return this.createUserWithRole(dto, "ADMIN");
+        return this.createUserWithRole(dto, "USER");
     }
 
     async oauthCreateUser(dto: OauthCreateUserDTO) {
@@ -45,7 +44,7 @@ export class UsersService {
             const authDto: AuthDto = {email:dto.email, password: 'SECRET_PASSWORD'};
             return this.login(authDto)
         }
-        return this.createUserWithRole(dto, "ADMIN");
+        return this.createUserWithRole(dto, "USER");
     }
 
     async createUserWithRole(dto: CreateUserDto | OauthCreateUserDTO, roleName: string) {

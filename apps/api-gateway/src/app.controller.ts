@@ -61,7 +61,7 @@ export class AppController {
         return {User: data.user, role: data.user.roles, token: data.token};
     }
 
-    @ApiOperation({summary: 'Авторизация через сьторонние сайты'})
+    @ApiOperation({summary: 'Авторизация через сторонние сайты'})
     @ApiResponse({status: 200})
     @UsePipes(ValidationPipe)
     @Post("/outRegistration")
@@ -80,7 +80,7 @@ export class AppController {
         return {email: data.user.email, userId: data.user.id, role: data.user.roles, token: data.token};
     }
 
-    @ApiOperation({summary: 'фильтры для поиска'})
+    @ApiOperation({summary: 'Фильтры для поиска'})
     @ApiResponse({status: 200})
     @Get("/filters")
     async filters() {

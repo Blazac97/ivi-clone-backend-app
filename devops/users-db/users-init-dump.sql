@@ -5,11 +5,12 @@
 -- Dumped from database version 15.2 (Debian 15.2-1.pgdg110+1)
 -- Dumped by pg_dump version 15.2
 
--- Started on 2023-05-10 17:18:28 UTC
+-- Started on 2023-05-24 18:52:42 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -204,7 +205,6 @@ COPY public.roles (id, value, "createdAt", "updatedAt") FROM stdin;
 --
 
 COPY public.user_roles (id, "roleId", "userId") FROM stdin;
-1	1	1
 \.
 
 
@@ -215,36 +215,7 @@ COPY public.user_roles (id, "roleId", "userId") FROM stdin;
 --
 
 COPY public.users (id, email, password, "createdAt", "updatedAt") FROM stdin;
-1	admin@admin.com	$2a$05$j4XVTtjEJd.0hKQGJqfhuu/3yfXXhWfH439jA3TQDIX/7bHvFfjn2	2023-05-10 16:34:56.833+00	2023-05-10 16:34:56.833+00
 \.
-
-
---
--- TOC entry 3361 (class 0 OID 0)
--- Dependencies: 215
--- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
---
-
-SELECT pg_catalog.setval('public.roles_id_seq', 1, true);
-
-
---
--- TOC entry 3362 (class 0 OID 0)
--- Dependencies: 217
--- Name: user_roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
---
-
-SELECT pg_catalog.setval('public.user_roles_id_seq', 1, false);
-
-
---
--- TOC entry 3363 (class 0 OID 0)
--- Dependencies: 219
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
---
-
-SELECT pg_catalog.setval('public.users_id_seq', 1, false);
-
 
 --
 -- TOC entry 3190 (class 2606 OID 16403)
@@ -327,7 +298,7 @@ ALTER TABLE ONLY public.user_roles
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
--- Completed on 2023-05-10 17:18:29 UTC
+-- Completed on 2023-05-24 18:52:42 UTC
 
 --
 -- PostgreSQL database dump complete

@@ -36,7 +36,7 @@ describe('UsersService', () => {
         password: 'password',
     };
 
-    const mockRole = {id: 1, value: 'ADMIN'};
+    const mockRole = {id: 2, value: 'USER'};
 
     const mockUsersRepository = {
         create: jest.fn().mockResolvedValue(mockUser),
@@ -140,7 +140,7 @@ describe('UsersService', () => {
     });
 
     describe('createUser', () => {
-        it('should create a new user with "ADMIN" role if no user with the same email exists', async () => {
+        it('should create a new user with "USER" role if no user with the same email exists', async () => {
             mockUsersRepository.findOne.mockResolvedValue(null);
             jest.spyOn(service, 'createUserWithRole').mockResolvedValue({
                 user: mockUser as User,
@@ -155,7 +155,7 @@ describe('UsersService', () => {
             });
             expect(service.createUserWithRole).toHaveBeenCalledWith(
                 mockUserDTO,
-                'ADMIN'
+                'USER'
             );
             expect(result).toEqual({
                 user: mockUser,
@@ -183,7 +183,7 @@ describe('UsersService', () => {
     });
 
     describe('oauthCreateUser', () => {
-        it('should create a new user with "ADMIN" role if no user with the same email exists', async () => {
+        it('should create a new user with "USER" role if no user with the same email exists', async () => {
             mockUsersRepository.findOne.mockResolvedValue(null);
             jest.spyOn(service, 'createUserWithRole').mockResolvedValue({
                 user: mockUser as User,
@@ -198,7 +198,7 @@ describe('UsersService', () => {
             });
             expect(service.createUserWithRole).toHaveBeenCalledWith(
                 mockOauthUserDTO,
-                'ADMIN'
+                'USER'
             );
             expect(result).toEqual({
                 user: mockUser,
