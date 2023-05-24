@@ -15,6 +15,7 @@ async function start() {
       },
     },
   });
+
   app.listen();
 }
 
