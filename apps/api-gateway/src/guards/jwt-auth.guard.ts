@@ -33,7 +33,7 @@ export class JwtAuthGuard implements CanActivate {
             //  проверка корректности формата заголовка авторизации.
             if (bearer !== 'Bearer' || !token) {
                 //  выброс исключения UnauthorizedException, если заголовок авторизации некорректен.
-                throw new UnauthorizedException({message: 'Пользователь не авторизован1'})
+                throw new UnauthorizedException({message: 'Пользователь не авторизован'})
             }
 
             //  вызов метода verify объекта сервиса JwtService для проверки подлинности JWT токена.
@@ -49,7 +49,7 @@ export class JwtAuthGuard implements CanActivate {
 
         } catch (e) {
             // выброс исключения UnauthorizedException, если пользователь не авторизован.
-            throw new UnauthorizedException({message: 'Пользователь не авторизован2'})
+            throw new UnauthorizedException({message: 'Пользователь не авторизован'})
         }
     }
 
