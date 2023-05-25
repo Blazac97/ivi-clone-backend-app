@@ -238,16 +238,10 @@ export class AppController {
 
     @ApiOperation({summary: 'Получение пользователя по токену'})
     @ApiResponse({status: 200, type: [User]})
-    @UseGuards(RolesGuard)
-    @Roles('ADMIN')
     @UseGuards(JwtAuthGuard)
     @Get("/checkToken")
     async checkToken(@Req() req) {
         const user = req.user;
-        const roles = req.user.roles;
-        return {
-            user: user,
-            roles: roles
-        };
+        return user;
     }
 }
