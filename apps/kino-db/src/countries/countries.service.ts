@@ -1,9 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Genre } from "../genres/genres.model";
 import { Country } from "./countries.model";
 import {Op, where} from "sequelize";
-import { CountryDTO } from "./dto/countryDTO";
 
 @Injectable()
 export class CountriesService {

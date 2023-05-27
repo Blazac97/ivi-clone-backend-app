@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { FactsController } from './facts.controller';
 import { FactsService } from './facts.service';
 import { SequelizeModule } from "@nestjs/sequelize";
-import { PersonProfession } from "../persons/personProfession";
 import { Fact } from "./facts.model";
 import { Film } from "../films/films.model";
 import { FilmPerson } from "../films/filmPerson";

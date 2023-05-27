@@ -7,7 +7,7 @@ import {Genre} from "../genres/genres.model";
 import {UpdateFilmDTO} from "./dto/updateFilmDTO";
 import {Profession} from "../professions/professions.model";
 import {Fact} from "../facts/facts.model";
-import sequelize, {Op, Sequelize} from "sequelize";
+import {Op, Sequelize} from "sequelize";
 
 
 @Injectable()

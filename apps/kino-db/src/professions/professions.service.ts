@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from "@nestjs/sequelize";
-import { Country } from "../countries/countries.model";
 import { Profession } from "./professions.model";
 
 @Injectable()

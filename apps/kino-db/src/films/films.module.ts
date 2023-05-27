@@ -3,7 +3,6 @@ import { FilmsController } from './films.controller';
 import { FilmsService } from './films.service';
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Person } from "../persons/persons.model";
-import { PersonProfession } from "../persons/personProfession";
 import { Film } from "./films.model";
 import { FilmPerson } from "./filmPerson";
 import { FilmCountry } from "./filmCountry";
@@ -22,7 +21,6 @@ import { GenresService } from "../genres/genres.service";
 import { ProfessionsService } from "../professions/professions.service";
 import { Profession } from "../professions/professions.model";
 import { ProfessionsModule } from "../professions/professions.module";
-import { UpdateFilmDTO } from "./dto/updateFilmDTO";
 import {Comment} from "../comments/comments.model";
 
 @Module({

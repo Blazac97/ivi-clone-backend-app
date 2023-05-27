@@ -1,8 +1,6 @@
 import {Controller} from '@nestjs/common';
-import {ProfessionsService} from "../professions/professions.service";
 import {MessagePattern, Payload} from "@nestjs/microservices";
 import {PersonsService} from "./persons.service";
-import {PersonDTO} from "./dto/personDTO";
 
 @Controller('persons')
 export class PersonsController {

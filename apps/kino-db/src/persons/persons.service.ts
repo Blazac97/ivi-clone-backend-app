@@ -6,7 +6,6 @@ import {PersonDTO} from "./dto/personDTO";
 import {ProfessionsService} from "../professions/professions.service";
 import {ProfessionDTO} from "../professions/dto/professionDTO";
 import {Op} from "sequelize";
-import {Sequelize} from "sequelize-typescript";
 
 @Injectable()
 export class PersonsService {

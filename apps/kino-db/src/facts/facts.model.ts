@@ -1,4 +1,4 @@
-import { BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo,  Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { Film } from "../films/films.model";
 
 interface FactCreationAtt {

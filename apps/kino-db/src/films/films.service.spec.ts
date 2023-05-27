@@ -1,10 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilmsService } from './films.service';
-import {UsersService} from "../../../auth-users/src/users/users.service";
 import {getModelToken} from "@nestjs/sequelize";
-import {User} from "../../../auth-users/src/users/users.model";
-import {RolesService} from "../../../auth-users/src/roles/roles.service";
-import {JwtService} from "@nestjs/jwt";
 import {Film} from "./films.model";
 import {Fact} from "../facts/facts.model";
 import {Op, Sequelize} from "sequelize";

@@ -1,5 +1,4 @@
 import { Controller } from '@nestjs/common';
-import { GenresService } from "../genres/genres.service";
 import { MessagePattern, Payload } from "@nestjs/microservices";
 import { CountriesService } from "./countries.service";
 

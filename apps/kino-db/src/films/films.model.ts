@@ -1,6 +1,4 @@
 import {BelongsToMany, Column, DataType, HasMany, HasOne, Model, Table} from "sequelize-typescript";
-
-import { PersonProfession } from "../persons/personProfession";
 import { Person } from "../persons/persons.model";
 import { Country } from "../countries/countries.model";
 import { Fact } from "../facts/facts.model";

@@ -1,5 +1,4 @@
 import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
-
 import { PersonProfession } from "../persons/personProfession";
 import { Person } from "../persons/persons.model";
 

@@ -3,7 +3,6 @@ import { PersonsController } from './persons.controller';
 import { PersonsService } from './persons.service';
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Profession } from "../professions/professions.model";
-import { PersonProfession } from "./personProfession";
 import {  Person } from "./persons.model";
 import { ProfessionsModule } from "../professions/professions.module";
 import { ProfessionsService } from "../professions/professions.service";

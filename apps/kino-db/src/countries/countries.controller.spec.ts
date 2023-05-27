@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
 import { CountriesController } from './countries.controller';
 import { CountriesService } from './countries.service';
 

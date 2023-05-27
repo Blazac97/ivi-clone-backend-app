@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GenresController } from './genres.controller';
 import {GenresService} from "./genres.service";
-import {Genre} from "./genres.model";
 import {HttpStatus} from "@nestjs/common";
 
 describe('GenresController', () => {
