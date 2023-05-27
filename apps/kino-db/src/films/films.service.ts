@@ -157,6 +157,7 @@ export class FilmsService {
             });
         }
         if (countries) include.push({model: Country, where: {countryName: countries}});
+
         if (persons) include.push({
             model: Person,
             where: {
@@ -166,6 +167,7 @@ export class FilmsService {
                 ]
             }
         });
+
 
         const order = [];
         if (sortBy === "rating") {
